@@ -26,7 +26,7 @@
               <div>{{ item.species }}</div>
             </td>
             <td>
-              <div>{{ lastEpisode(item.episode)  }} </div>
+              <div>{{ item.episodeCode  }} </div>
             </td>
             <td>
               <v-btn @click="addToFavorite(item)">Add to favorite</v-btn>
@@ -106,7 +106,6 @@ import * as types from '@/store/types';
       charactersResults: types.CHARACTERS,
       info: types.INFO,
       arrFavorites: types.GET_FAVORITE,
-      getLastEpisode: types.GET_LAST_EPISODE,
       getCurrentPage:types.GET_CURRENT_PAGE
     }),
  
@@ -126,7 +125,6 @@ import * as types from '@/store/types';
     ...mapActions ({
       getCharacters: types.GET_CHARACTERS,
       setCurrentPage: types.SET_CURRENT_PAGE,
-      setLastEpisode: types.SET_LAST_EPISODE
     }),
     ...mapMutations ({
       setFavorite: types.SET_FAVORITE,
@@ -134,12 +132,7 @@ import * as types from '@/store/types';
     addToFavorite(item){
       this.setFavorite(item);
     },
-     lastEpisode(item) {
-       console.log(item)
-      var url = item[item.length - 1];
-      this.setLastEpisode(url);
-      // return this.getLastEpisode;
-    },
+   
   },
   }
 </script>

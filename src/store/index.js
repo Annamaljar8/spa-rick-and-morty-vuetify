@@ -14,8 +14,7 @@ export default new Vuex.Store({
     info: [],
     currentPage: 1,
     arrFavorites: [],
-    lastEpisode: ''
-   
+    tmp: {}
   },
   
   getters: {
@@ -23,8 +22,7 @@ export default new Vuex.Store({
     [types.INFO]: (state) => state.info,
     [types.GET_CURRENT_PAGE]: (state) => state.currentPage,
     [types.GET_FAVORITE]: (state) =>state.arrFavorites,
-    [types.GET_LAST_EPISODE]: (state) =>{state.lastEpisode 
-      console.log('state.lastEpisode', state.lastEpisode);},
+    
   },
   mutations: {
     [types.GET_CHARACTERS]: (state, payload) => {
@@ -44,29 +42,55 @@ export default new Vuex.Store({
     [types.DELETE_FAVORITE]: (state, payload) => {
       state.arrFavorites = state.arrFavorites.filter(item => item !== payload);
     },
-    [types.SET_LAST_EPISODE]: (state, payload) => {
-      console.log('payload', payload);
-      state.lastEpisode = payload;
+    [types.SET_TMP]: (state, payload) => {
+      state.tmp = payload;
     }
   },
   actions: {
     [types.GET_CHARACTERS]: async ({ commit, state }, payload) => {
-      const res = await axios.get(`${state.apiEndpoint}${state.apiCharacters}`);
+      let res = await axios.get(`${state.apiEndpoint}${state.apiCharacters}`);
       console.log('222', res.data)
+      //-------------------------------------------------
+      var url = '';
+
+      for(var [key, item] of Object.entries(res.data?.results)){
+        url = item.episode[item.episode.length - 1];
+        let tmpObj = state.tmp;
+        if(typeof(tmpObj[url]) !== 'undefined'){
+          res.data.results[key].episodeCode = tmpObj[url];
+        } else {
+          const resEpizode = await axios.get(url);
+          res.data.results[key].episodeCode = resEpizode.data.episode;
+          tmpObj[url] = resEpizode.data.episode;
+          commit(types.SET_TMP, tmpObj);
+        }
+      }
+      //-----------------------------------------------
       commit(types.GET_CHARACTERS, res.data?.results);
       commit(types.GET_INFO, res.data?.info);
     },
     [types.SET_CURRENT_PAGE]: async ({ commit, state }, payload) => {
       const res = await axios.get(`${state.apiEndpoint}${state.apiCharacters}${state.apiPage}${payload}`);
+      //-------------------------------------------------
+      var url = '';
+
+      for(var [key, item] of Object.entries(res.data?.results)){
+        url = item.episode[item.episode.length - 1];
+        let tmpObj = state.tmp;
+        if(typeof(tmpObj[url]) !== 'undefined'){
+          res.data.results[key].episodeCode = tmpObj[url];
+        } else {
+          const resEpizode = await axios.get(url);
+          res.data.results[key].episodeCode = resEpizode.data.episode;
+          tmpObj[url] = resEpizode.data.episode;
+          commit(types.SET_TMP, tmpObj);
+        }
+      }
+      //-----------------------------------------------
       commit(types.SET_CURRENT_PAGE, payload);
       commit(types.GET_CHARACTERS, res.data?.results);
     },
-    [types.SET_LAST_EPISODE]: async ({ commit }, payload) => {
-      console.log('payload', payload);
-      const res = await axios.get(payload);
-      commit(types.SET_LAST_EPISODE, res.data.episode);
-      console.log('res.episode', res.data.episode);
-    }
+    
     
     
     // [types.GET_COMMENTS]: async ({ commit, state }, payload) => {

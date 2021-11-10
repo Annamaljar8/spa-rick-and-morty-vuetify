@@ -18,5 +18,4 @@ export const SET_FAVORITE = 'all/SET_FAVORITE';
 export const GET_FAVORITE = 'all/GET_FAVORITE';
 export const DELETE_FAVORITE = 'all/DELETE_FAVORITE';
 
-export const SET_LAST_EPISODE = 'all/SET_LAST_EPISODE';
-export const GET_LAST_EPISODE = 'all/GET_LAST_EPISODE';
+export const SET_TMP = 'all/SET_TMP';
