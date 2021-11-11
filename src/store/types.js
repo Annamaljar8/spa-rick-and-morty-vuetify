@@ -17,5 +17,9 @@ export const GET_PREV_PAGE = 'all/GET_PREV_PAGE';
 export const SET_FAVORITE = 'all/SET_FAVORITE';
 export const GET_FAVORITE = 'all/GET_FAVORITE';
 export const DELETE_FAVORITE = 'all/DELETE_FAVORITE';
+export const SET_FAVORITE_CURRENT = 'all/SET_FAVORITE_CURRENT';
+export const GET_FAVORITE_CURRENT = 'all/GET_FAVORITE_CURRENT';
+export const GET_ARR_CURRENT_PAGE = 'all/GET_ARR_CURRENT_PAGE'; 
 
 export const SET_TMP = 'all/SET_TMP';
+export const  SIZE_TABLE = 'all/SIZE_TABLE';

@@ -2,7 +2,7 @@
   <div>
     <v-data-table
     :headers="headers"
-    :items-per-page="20"
+    :items-per-page="sizeTable"
     class="elevation-1"
     :items="charactersResults"
     hide-default-footer
@@ -106,7 +106,8 @@ import * as types from '@/store/types';
       charactersResults: types.CHARACTERS,
       info: types.INFO,
       arrFavorites: types.GET_FAVORITE,
-      getCurrentPage:types.GET_CURRENT_PAGE
+      getCurrentPage:types.GET_CURRENT_PAGE,
+      sizeTable:types.SIZE_TABLE 
     }),
  
     pagesLength(){

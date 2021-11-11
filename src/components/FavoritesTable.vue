@@ -2,9 +2,9 @@
 <div>
   <v-data-table
       :headers="headers"
-      :items-per-page="20"
+      :items-per-page="sizeTable"
       class="elevation-1"
-      :items="arrFavorites"
+      :items="arrFavoritesCurrent"
       hide-default-footer
     >
         <template v-slot:body="{items}">
@@ -37,7 +37,7 @@
   </v-data-table>
   <div class="text-center pt-2">
       <v-pagination
-        v-model="currentPage"
+        v-model="arrCurrentPage"
         :length="arrPagesLength"
       ></v-pagination>
     </div>
@@ -106,19 +106,21 @@ import * as types from '@/store/types';
       info: types.INFO,
       // currentPage: types.GET_CURRENT_PAGE,
       arrFavorites: types.GET_FAVORITE,
-      getCurrentPage:types.GET_CURRENT_PAGE
+      arrFavoritesCurrent: types.GET_FAVORITE_CURRENT,
+      getArrCurrentPage:types.GET_ARR_CURRENT_PAGE,
+      sizeTable:types.SIZE_TABLE 
     }),
 
     arrPagesLength(){
-      console.log("length", Math.ceil(this.arrFavorites.length / 5))
-      return Math.ceil(this.arrFavorites.length / 20);
+      console.log("length", Math.ceil(this.arrFavorites.length / this.sizeTable))
+      return Math.ceil(this.arrFavorites.length / this.sizeTable);
     },
-      currentPage: {
+      arrCurrentPage: {
       get() {
-        return this.getCurrentPage; 
+        return this.getArrCurrentPage; 
       },
       set(currentPage) {
-        this.setCurrentPage(currentPage);
+        this.setFavoriteCurrent(currentPage);
       },
     },
   },
@@ -129,11 +131,15 @@ import * as types from '@/store/types';
     }),
     ...mapMutations ({
        deleteFavorite: types.DELETE_FAVORITE,
+       setFavoriteCurrent: types.SET_FAVORITE_CURRENT
     }),
      deleteFromFavorite(item){
       this.deleteFavorite(item);
     },
   },
+  mounted(){
+     this.setFavoriteCurrent(1)
+  }
     
   }
 </script>

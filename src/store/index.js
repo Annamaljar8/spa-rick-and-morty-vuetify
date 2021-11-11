@@ -14,7 +14,10 @@ export default new Vuex.Store({
     info: [],
     currentPage: 1,
     arrFavorites: [],
-    tmp: {}
+    tmp: {},
+    arrFavoritesCurrent: [],
+    arrCurrentPage: 1,
+    sizeTable: 20
   },
   
   getters: {
@@ -22,7 +25,9 @@ export default new Vuex.Store({
     [types.INFO]: (state) => state.info,
     [types.GET_CURRENT_PAGE]: (state) => state.currentPage,
     [types.GET_FAVORITE]: (state) =>state.arrFavorites,
-    
+    [types.GET_FAVORITE_CURRENT]: (state) =>state.arrFavoritesCurrent,
+    [types.GET_ARR_CURRENT_PAGE]: (state) => state.arrCurrentPage,
+    [types.SIZE_TABLE]: (state) => state.sizeTable,
   },
   mutations: {
     [types.GET_CHARACTERS]: (state, payload) => {
@@ -41,10 +46,31 @@ export default new Vuex.Store({
     },
     [types.DELETE_FAVORITE]: (state, payload) => {
       state.arrFavorites = state.arrFavorites.filter(item => item !== payload);
+      let tmp = state.arrFavorites;
+      let startItem = (state.arrCurrentPage - 1) * state.sizeTable;
+      state.arrFavoritesCurrent = [];
+      for(var i = 0; i < tmp.length; i++){
+        if((i >= startItem) && (i < (startItem + state.sizeTable))){
+          state.arrFavoritesCurrent.push(tmp[i]);
+        }
+      }
     },
     [types.SET_TMP]: (state, payload) => {
       state.tmp = payload;
-    }
+    },
+    [types.SET_FAVORITE_CURRENT]: ( state , payload) => {
+      console.log('payload', payload)
+      let tmp = state.arrFavorites;
+      let startItem = (payload - 1) * state.sizeTable;
+      state.arrFavoritesCurrent = [];
+      for(var i = 0; i < tmp.length; i++){
+        if((i >= startItem) && (i < (startItem + state.sizeTable))){
+          state.arrFavoritesCurrent.push(tmp[i]);
+        }
+      }
+      state.arrCurrentPage = payload;
+      console.log('arrFavoritesCurrent', state.arrFavoritesCurrent)
+    },
   },
   actions: {
     [types.GET_CHARACTERS]: async ({ commit, state }, payload) => {
