@@ -10,6 +10,7 @@ export default new Vuex.Store({
     apiEndpoint: 'https://rickandmortyapi.com/api',
     apiCharacters: '/character',
     apiPage: '/?page=',
+    apiName:'?name=',
     characters: [],
     info: [],
     currentPage: 1,
@@ -17,7 +18,9 @@ export default new Vuex.Store({
     tmp: {},
     arrFavoritesCurrent: [],
     arrCurrentPage: 1,
-    sizeTable: 20
+    sizeTable: 20,
+    selectedTypeSearch: '',
+    searchValue: '',
   },
   
   getters: {
@@ -71,14 +74,20 @@ export default new Vuex.Store({
       state.arrCurrentPage = payload;
       console.log('arrFavoritesCurrent', state.arrFavoritesCurrent)
     },
+    [types.GET_SELECTED_TYPE_SEARCH]: (state, payload) => {
+      state.selectedTypeSearch = payload;
+    },
+    [types.GET_SEARCH_VALUE]: (state, payload) => {
+      state.searchValue = payload;
+    },
   },
   actions: {
-    [types.GET_CHARACTERS]: async ({ commit, state }, payload) => {
+    [types.GET_CHARACTERS]: async ({ commit, state }) => {
       let res = await axios.get(`${state.apiEndpoint}${state.apiCharacters}`);
-      console.log('222', res.data)
+      console.log('222', res)
       //-------------------------------------------------
       var url = '';
-
+      
       for(var [key, item] of Object.entries(res.data?.results)){
         url = item.episode[item.episode.length - 1];
         let tmpObj = state.tmp;
@@ -96,10 +105,18 @@ export default new Vuex.Store({
       commit(types.GET_INFO, res.data?.info);
     },
     [types.SET_CURRENT_PAGE]: async ({ commit, state }, payload) => {
-      const res = await axios.get(`${state.apiEndpoint}${state.apiCharacters}${state.apiPage}${payload}`);
+      let selectedTypeSearch = state.selectedTypeSearch;
+      let searchValue = state.searchValue;
+      let res = '';
+      if((selectedTypeSearch === '') || (searchValue === '')){
+        res = await axios.get(`${state.apiEndpoint}${state.apiCharacters}${state.apiPage}${payload}`);
+      } else {
+        res = await axios.get(`${state.apiEndpoint}${state.apiCharacters}${state.apiPage}${payload}${selectedTypeSearch}${searchValue}`);
+      }
+      
       //-------------------------------------------------
       var url = '';
-
+      
       for(var [key, item] of Object.entries(res.data?.results)){
         url = item.episode[item.episode.length - 1];
         let tmpObj = state.tmp;
@@ -116,11 +133,19 @@ export default new Vuex.Store({
       commit(types.SET_CURRENT_PAGE, payload);
       commit(types.GET_CHARACTERS, res.data?.results);
     },
-    
-    
-    
-    // [types.GET_COMMENTS]: async ({ commit, state }, payload) => {
-    //   const res = await axios.get(`${state.apiEndpoint}${api.COMMENTS}${payload}`);
-    //   commit(types.GET_COMMENTS, res.data);
+
+    //-----------------search------------//
+    [types.SEARCH_BY_NAME]: async ({ commit, state }, payload) => {
+      const res = await axios.get(`${state.apiEndpoint}${state.apiCharacters}${state.apiName}${payload}`);
+      console.log('payloadsasdasdsa', payload)
+      // commit(types.SET_CURRENT_PAGE, payload);
+      commit(types.GET_CHARACTERS, res.data?.results);
+      console.log("sdfsds", res.data)
+      commit(types.GET_INFO, res.data?.info);
+      commit(types.GET_SELECTED_TYPE_SEARCH, '&name=');
+      commit(types.GET_SEARCH_VALUE, payload);
+      /////////////////TO DO Last Episode////////////////
+    },
+    //-----------------------------------//
   }
 })

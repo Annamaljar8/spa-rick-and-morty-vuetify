@@ -1,3 +1,4 @@
+export const SET_ALL_CHARACTERS = 'all/SET_ALL_CHARACTERS';
 export const GET_CHARACTERS = 'all/GET_CHARACTERS';
 export const CHARACTERS = 'all/CHARACTERS';
 
@@ -23,3 +24,10 @@ export const GET_ARR_CURRENT_PAGE = 'all/GET_ARR_CURRENT_PAGE';
 
 export const SET_TMP = 'all/SET_TMP';
 export const  SIZE_TABLE = 'all/SIZE_TABLE';
+
+export const SEARCH_BY_NAME = 'all/SEARCH_BY_NAME';  
+export const SEARCH_BY_ID = 'all/SEARCH_BY_ID';  
+export const SEARCH_BY_EPISODE = 'all/SEARCH_BY_EPISODE'; 
+
+export const GET_SELECTED_TYPE_SEARCH = 'all/GET_SELECTED_TYPE_SEARCH';
+export const GET_SEARCH_VALUE = 'all/GET_SEARCH_VALUE'; 

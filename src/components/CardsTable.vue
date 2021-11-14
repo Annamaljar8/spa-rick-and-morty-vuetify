@@ -1,14 +1,13 @@
 <template>
-<div>
+<div id="rickAndMorty">
+  <Search></Search>
   <v-btn @click="allCharacters">All Characters</v-btn>
     <v-btn @click="favorites">Favorites</v-btn>
-    
-    
     <div v-if="allCharacter" class="">
       <AllTable></AllTable>
     </div>
     <div v-if="favorite" class="">
-    <FavoritesTable></FavoritesTable>
+      <FavoritesTable></FavoritesTable>
     </div>
 </div>
 
@@ -18,6 +17,7 @@
 <script>
 import AllTable from './AllTable.vue';
 import FavoritesTable from './FavoritesTable.vue';
+import Search from './Search.vue';
 import { mapActions, mapMutations, mapGetters } from 'vuex';
 import * as types from '@/store/types';
 
@@ -31,7 +31,8 @@ import * as types from '@/store/types';
     }),
      components: {
     AllTable,
-    FavoritesTable
+    FavoritesTable,
+    Search
    
   },
     computed: {
