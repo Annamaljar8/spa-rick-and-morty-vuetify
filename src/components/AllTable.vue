@@ -26,7 +26,7 @@
               <div>{{ item.species }}</div>
             </td>
             <td>
-              <div>{{ item.episodeCode  }} </div>
+              <div>{{ item.episodeCode }} </div>
             </td>
             <td>
               <v-btn @click="addToFavorite(item)">Add to favorite</v-btn>
@@ -111,7 +111,12 @@ import * as types from '@/store/types';
     }),
  
     pagesLength(){
-      return this.info?.pages;
+      // console.log('this.info.pages', this.info.pages)
+      // if(typeof(this.info.pages) === 'undefined'){
+      //   return this.info;
+      // } else {
+        return this.info?.pages;
+      // }
     },
     currentPage: {
       get() {

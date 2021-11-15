@@ -45,9 +45,9 @@ import * as types from '@/store/types';
   lastEpisode() {
       return this.charactersResult.episode[this.charactersResult.episode.length - 1] || ''
     },
-    pagesLength(){
-      return this.info?.pages;
-    },
+    // pagesLength(){
+    //   return this.info?.pages;
+    // },
   },
   methods: {
     ...mapActions ({

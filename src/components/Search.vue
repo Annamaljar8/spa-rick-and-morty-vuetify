@@ -42,13 +42,35 @@ export default({
     methods: {
       ...mapActions({
         searchByName: types.SEARCH_BY_NAME,
+        searchById: types.SEARCH_BY_ID,
+        searchByEpisode: types.SEARCH_BY_EPISODE,
       }),
       handleChange(value){
-        this.typeOfFilter = value;
+        this.typeOfFilter = value.toLowerCase();
+        console.log('this.typeOfFilter', this.typeOfFilter)
       },
       filterValue(e){
-        this.searchByName(e.target.value.toLowerCase())
-        console.log(e.target.value)
+        let inputValue = e.target.value;
+        // if (inputValue === ''){
+        //   e.preventDefault();
+        // } else {
+          switch (this.typeOfFilter) {
+            case 'name':
+              console.log('name inputValue', inputValue)
+              return this.searchByName(inputValue.toLowerCase());
+
+            case 'id':
+              return this.searchById(inputValue.toLowerCase());
+
+            case 'episode':
+              return this.searchByEpisode(inputValue);
+
+            default:
+              return '';
+          }
+        // // }
+        // this.searchByName()
+        // console.log(e.target.value)
       }
     }
 })

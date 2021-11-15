@@ -28,6 +28,7 @@ export const  SIZE_TABLE = 'all/SIZE_TABLE';
 export const SEARCH_BY_NAME = 'all/SEARCH_BY_NAME';  
 export const SEARCH_BY_ID = 'all/SEARCH_BY_ID';  
 export const SEARCH_BY_EPISODE = 'all/SEARCH_BY_EPISODE'; 
+export const SEARCH_BY_EPISODE_ID = 'all/SEARCH_BY_EPISODE_ID'; 
 
-export const GET_SELECTED_TYPE_SEARCH = 'all/GET_SELECTED_TYPE_SEARCH';
-export const GET_SEARCH_VALUE = 'all/GET_SEARCH_VALUE'; 
+export const SET_SELECTED_TYPE_SEARCH = 'all/SET_SELECTED_TYPE_SEARCH';
+export const SET_SEARCH_VALUE = 'all/SET_SEARCH_VALUE'; 

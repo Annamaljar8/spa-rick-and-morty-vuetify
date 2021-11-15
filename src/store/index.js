@@ -11,6 +11,8 @@ export default new Vuex.Store({
     apiCharacters: '/character',
     apiPage: '/?page=',
     apiName:'?name=',
+    apiEpisodes: '/episode',
+    apiEpisode: '?episode=',
     characters: [],
     info: [],
     currentPage: 1,
@@ -21,6 +23,7 @@ export default new Vuex.Store({
     sizeTable: 20,
     selectedTypeSearch: '',
     searchValue: '',
+    searchByEpisodeId: []
   },
   
   getters: {
@@ -74,78 +77,158 @@ export default new Vuex.Store({
       state.arrCurrentPage = payload;
       console.log('arrFavoritesCurrent', state.arrFavoritesCurrent)
     },
-    [types.GET_SELECTED_TYPE_SEARCH]: (state, payload) => {
+    [types.SET_SELECTED_TYPE_SEARCH]: (state, payload) => {
       state.selectedTypeSearch = payload;
     },
-    [types.GET_SEARCH_VALUE]: (state, payload) => {
+    [types.SET_SEARCH_VALUE]: (state, payload) => {
       state.searchValue = payload;
+    },
+    [types.SEARCH_BY_EPISODE_ID]: (state, payload) => {
+      state.searchByEpisodeId = payload;
     },
   },
   actions: {
-    [types.GET_CHARACTERS]: async ({ commit, state }) => {
-      let res = await axios.get(`${state.apiEndpoint}${state.apiCharacters}`);
-      console.log('222', res)
-      //-------------------------------------------------
+    ////////////////////////////
+    getEpisodeLastCode: async ({commit, state}, results) => {
+      console.log('90394304930', results)
       var url = '';
       
-      for(var [key, item] of Object.entries(res.data?.results)){
+      for(var [key, item] of Object.entries(results)){
         url = item.episode[item.episode.length - 1];
         let tmpObj = state.tmp;
         if(typeof(tmpObj[url]) !== 'undefined'){
-          res.data.results[key].episodeCode = tmpObj[url];
+          results[key].episodeCode = tmpObj[url];
         } else {
           const resEpizode = await axios.get(url);
-          res.data.results[key].episodeCode = resEpizode.data.episode;
+          results[key].episodeCode = resEpizode.data.episode;
           tmpObj[url] = resEpizode.data.episode;
           commit(types.SET_TMP, tmpObj);
         }
       }
+      return results;
+
+    },
+
+    ////////////////////////////
+    [types.GET_CHARACTERS]: async ({ commit, dispatch, state }) => {
+      let res = await axios.get(`${state.apiEndpoint}${state.apiCharacters}`);
+      console.log('222', res)
+      //-------------------------------------------------
+      dispatch('getEpisodeLastCode', res.data.results).then((data) => {
+        res.data.results = data;
+        console.log('3423423423432423',data)
+        commit(types.GET_CHARACTERS, res.data?.results)
+      });
       //-----------------------------------------------
-      commit(types.GET_CHARACTERS, res.data?.results);
+      // commit(types.GET_CHARACTERS, res.data?.results);
       commit(types.GET_INFO, res.data?.info);
     },
-    [types.SET_CURRENT_PAGE]: async ({ commit, state }, payload) => {
+    [types.SET_CURRENT_PAGE]: async ({ commit, dispatch, state }, payload) => {
       let selectedTypeSearch = state.selectedTypeSearch;
       let searchValue = state.searchValue;
       let res = '';
       if((selectedTypeSearch === '') || (searchValue === '')){
         res = await axios.get(`${state.apiEndpoint}${state.apiCharacters}${state.apiPage}${payload}`);
+        console.log('114 res', res)
       } else {
-        res = await axios.get(`${state.apiEndpoint}${state.apiCharacters}${state.apiPage}${payload}${selectedTypeSearch}${searchValue}`);
-      }
-      
-      //-------------------------------------------------
-      var url = '';
-      
-      for(var [key, item] of Object.entries(res.data?.results)){
-        url = item.episode[item.episode.length - 1];
-        let tmpObj = state.tmp;
-        if(typeof(tmpObj[url]) !== 'undefined'){
-          res.data.results[key].episodeCode = tmpObj[url];
+        if(selectedTypeSearch === '&episode='){
+          let arrIds = state.searchByEpisodeId;
+          arrIds = arrIds.slice((payload - 1) * state.sizeTable, payload * state.sizeTable);
+          arrIds = arrIds.join(',');
+          let resTmp = await axios.get(`${state.apiEndpoint}${state.apiCharacters}/${arrIds}`);
+          res = {data:{results:resTmp.data}};
+          console.log('12121', res)
         } else {
-          const resEpizode = await axios.get(url);
-          res.data.results[key].episodeCode = resEpizode.data.episode;
-          tmpObj[url] = resEpizode.data.episode;
-          commit(types.SET_TMP, tmpObj);
+          res = await axios.get(`${state.apiEndpoint}${state.apiCharacters}${state.apiPage}${payload}${selectedTypeSearch}${searchValue}`);
+          console.log('116 res', res)
         }
       }
+
+      
+
+      //-------------------------------------------------
+      dispatch('getEpisodeLastCode', res.data.results).then((data) => {
+        res.data.results = data;
+        console.log('3423423423432423',data)
+        commit(types.GET_CHARACTERS, res.data?.results)
+      });
       //-----------------------------------------------
+      
       commit(types.SET_CURRENT_PAGE, payload);
-      commit(types.GET_CHARACTERS, res.data?.results);
+      // commit(types.GET_CHARACTERS, res.data?.results);
     },
 
     //-----------------search------------//
-    [types.SEARCH_BY_NAME]: async ({ commit, state }, payload) => {
+    [types.SEARCH_BY_NAME]: async ({ commit, dispatch, state }, payload) => {
       const res = await axios.get(`${state.apiEndpoint}${state.apiCharacters}${state.apiName}${payload}`);
       console.log('payloadsasdasdsa', payload)
       // commit(types.SET_CURRENT_PAGE, payload);
-      commit(types.GET_CHARACTERS, res.data?.results);
+      // commit(types.GET_CHARACTERS, res.data?.results);
       console.log("sdfsds", res.data)
       commit(types.GET_INFO, res.data?.info);
-      commit(types.GET_SELECTED_TYPE_SEARCH, '&name=');
-      commit(types.GET_SEARCH_VALUE, payload);
-      /////////////////TO DO Last Episode////////////////
+      commit(types.SET_SELECTED_TYPE_SEARCH, '&name=');
+      commit(types.SET_SEARCH_VALUE, payload);
+      //-------------------------------------------------
+      dispatch('getEpisodeLastCode', res.data.results).then((data) => {
+        res.data.results = data;
+        console.log('3423423423432423',data)
+        commit(types.GET_CHARACTERS, res.data?.results)
+      });
+      //-----------------------------------------------
+    },
+    [types.SEARCH_BY_ID]: async ({ commit, dispatch, state }, payload) => {
+      const res = await axios.get(`${state.apiEndpoint}${state.apiCharacters}/${payload}`);
+      console.log('payloadsasdasdsa', payload)
+      // commit(types.SET_CURRENT_PAGE, 1);
+      // commit(types.GET_CHARACTERS, [res.data]);
+      console.log("sdfsds", res.data)
+      commit(types.GET_INFO, res.data?.info);
+    //-------------------------------------------------
+    dispatch('getEpisodeLastCode', [res.data]).then((data) => {
+      [res.data] = data;
+      console.log('3423423423432423',[res.data])
+      commit(types.GET_CHARACTERS, [res.data])
+    });
+    //-----------------------------------------------
+    },
+    [types.SEARCH_BY_EPISODE]: async ({ commit, dispatch,  state }, payload) => {
+      const res = await axios.get(`${state.apiEndpoint}${state.apiEpisodes}${state.apiEpisode}${payload}`);
+      console.log('payloadsasdasdsa', payload)
+      // commit(types.SET_CURRENT_PAGE, payload);
+      let characters = res.data.results[0].characters;
+      let arrId = [];
+      for (var i = 0; i < characters.length; i++){
+        let str = characters[i];
+        str = str.split('https://rickandmortyapi.com/api/character/');
+        arrId.push(str[1]);
+      }
+      commit(types.SEARCH_BY_EPISODE_ID, arrId);
+      let pages =  Math.ceil(arrId.length / state.sizeTable)
+      console.log('arrId', arrId);
+      arrId.slice(0, state.sizeTable);
+      arrId = arrId.join(',');
+      console.log('arrId', arrId);
+
+      let resCurrentCharacters = await axios.get(`${state.apiEndpoint}${state.apiCharacters}/${arrId}`);
+      console.log(`${state.apiEndpoint}${state.apiCharacters}/${arrId}`)
+      // commit(types.GET_CHARACTERS, resCurrentCharacters.data);
+
+      console.log("resCurrentCharacters", resCurrentCharacters.data);
+      console.log(pages)
+
+      commit(types.GET_INFO, {pages:pages});
+      commit(types.SET_SELECTED_TYPE_SEARCH, '&episode=');
+      commit(types.SET_SEARCH_VALUE, payload);
+      
+       //-------------------------------------------------
+       dispatch('getEpisodeLastCode', resCurrentCharacters.data).then((data) => {
+        resCurrentCharacters.data = data;
+        console.log('3423423423432423',data)
+        commit(types.GET_CHARACTERS, resCurrentCharacters.data)
+      });
+      //-----------------------------------------------
     },
     //-----------------------------------//
+
   }
 })
