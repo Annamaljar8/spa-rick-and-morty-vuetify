@@ -37,8 +37,9 @@
 
   </v-data-table>
      <div class="text-center pt-2">
-      <v-pagination
-         v-model="currentPage"
+      <v-pagination 
+        color="#11B0C8"
+        v-model="currentPage"
         :length="pagesLength"
       ></v-pagination>
     </div>

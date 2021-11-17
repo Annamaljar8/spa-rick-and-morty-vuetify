@@ -7,6 +7,7 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@mdi/font": "^6.5.95",
     "axios": "^0.24.0",
     "core-js": "~3.19.0",
     "vue": "~2.6.14",
@@ -14,6 +15,7 @@
     "vuex": "~3.6.2"
   },
   "devDependencies": {
+    "@mdi/js": "^6.5.95",
     "@vue/cli-plugin-babel": "~4.5.15",
     "@vue/cli-plugin-vuex": "~4.5.15",
     "@vue/cli-service": "~4.5.15",

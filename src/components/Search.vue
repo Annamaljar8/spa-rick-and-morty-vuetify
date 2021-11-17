@@ -1,5 +1,6 @@
 <template>
   <div id="searchWrapper">
+    <img src="../assets/logo.svg" alt="" width="240">
     <div class="search" >
     <span class="text">
       Search by
@@ -18,7 +19,12 @@
           </v-list-item-content>
         </template>
     </v-autocomplete>
-    <input shaped class="search-input" @change="filterValue">
+    <div class="search-input-wrapper">
+      <input shaped class="search-input" @change="filterValue">
+      <v-icon  role="img" aria-hidden="false" color="#11B0C8" large>
+        {{ mdiMagnify }}
+      </v-icon>
+    </div>
     </div>
   </div>
 </template>
@@ -26,6 +32,7 @@
 <script>
 import { mapActions } from "vuex";
 import * as types from '@/store/types';
+import { mdiMagnify } from '@mdi/js'; 
 
 export default({
       data () {
@@ -36,6 +43,7 @@ export default({
             'Episode',
           ],
           typeOfFilter: '',
+          mdiMagnify: mdiMagnify
         }
     },
    
@@ -79,9 +87,9 @@ export default({
 
 <style>
   #searchWrapper{
-      display: flex;
-      justify-content: center;
-      margin: 3rem;
+    display: flex;
+    justify-content: flex-start;
+    margin: 1rem;
       
   }
   #searchWrapper .search{
@@ -91,6 +99,7 @@ export default({
     height: 3.5rem;
     border: 1px solid #a9b1bd;
     border-radius: 12px;
+    margin-left: 5rem;
   }
   .text{
       width: 7.5rem;
@@ -125,11 +134,18 @@ export default({
     color: #A9B1BD;
 }
 #rickAndMorty #searchWrapper .search .search-input{
-    width: 225px;
-    padding-left: 25px;
+    width: 200px;
+    padding-left: 12px;
 }
 .search-input:focus-visible {
       outline: none;
+}
+.search-input-wrapper{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: center;
+    padding: 0.8rem;
 }
 #app .v-autocomplete__content.v-menu__content {
   box-shadow: none;
@@ -150,4 +166,5 @@ export default({
     color: #a9b1bd;
     font-weight: 300;
 }
+
 </style>
