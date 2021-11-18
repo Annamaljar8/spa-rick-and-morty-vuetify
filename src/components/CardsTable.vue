@@ -79,20 +79,11 @@ import * as types from '@/store/types';
   }
   }
 </script>
-<style scoped lang="scss">
-.card{
-  width: 90vw;
-  height: 3rem;
-      display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-content: stretch;
-    justify-content: flex-start;
-    align-items: center;
+<style>
+#rickAndMorty {
+  color: #a9b1bd;
+  font-weight: 300;
+  font-size: 16px;
 }
-img{
-  width: 2.688rem!important;
-  height: 4.25rem!important;
-  object-fit: cover;
-}
+
 </style>
