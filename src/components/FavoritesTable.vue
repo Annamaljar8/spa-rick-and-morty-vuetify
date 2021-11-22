@@ -3,7 +3,6 @@
   <v-data-table
       :headers="headers"
       :items-per-page="sizeTable"
-      class="elevation-1"
       :items="arrFavoritesCurrent"
       hide-default-footer
       disable-sort
@@ -11,6 +10,9 @@
         <template v-slot:body="{items}">
           <tbody>
             <tr v-for="(item,index) in items" :key="index">
+              <td>
+                <div></div>
+              </td>
               <td class="card-img">
                 <img :src="item.image"/>
               </td>
@@ -21,9 +23,11 @@
                 <div>{{ item.name }}</div>
               </td>
               <td>
-                <div>
+                <div class="icons-color">
                   <v-icon v-if="item.gender === 'Female'"> {{ mdiGenderFemale }}</v-icon>
                   <v-icon v-if="item.gender === 'Male'">{{ mdiGenderMale }}</v-icon>
+                  <v-icon v-if="item.gender === 'Genderless'">{{ mdiClose }}</v-icon>
+                  <v-icon v-if="item.gender === 'unknown'">{{ mdiMinus }}</v-icon>
                   {{ item.gender }}
                 </div>
               </td>
@@ -47,6 +51,7 @@
     </v-data-table>
     <div class="text-center pt-2">
       <v-pagination
+        color="#11B0C8"
         v-model="arrCurrentPage"
         :length="arrPagesLength"
       ></v-pagination>
@@ -57,12 +62,16 @@
 <script>
 import { mapActions, mapMutations, mapGetters } from 'vuex';
 import * as types from '@/store/types';
-import { mdiGenderFemale,  mdiGenderMale, mdiStar} from '@mdi/js'; 
+import { mdiGenderFemale,  mdiGenderMale, mdiClose, mdiMinus, mdiStar} from '@mdi/js'; 
 
   export default {
     
     data: () => ({
       headers: [
+        {
+        text: '',
+        value: '',
+        },
         {
           text: 'Photo',
           value: '',
@@ -102,7 +111,9 @@ import { mdiGenderFemale,  mdiGenderMale, mdiStar} from '@mdi/js';
       },
         mdiGenderMale: mdiGenderMale,
         mdiGenderFemale: mdiGenderFemale,
-        mdiStar: mdiStar, 
+        mdiClose: mdiClose,
+        mdiMinus: mdiMinus,
+        mdiStar: mdiStar
     }),
     computed: {
       ...mapGetters ({
@@ -145,6 +156,6 @@ import { mdiGenderFemale,  mdiGenderMale, mdiStar} from '@mdi/js';
     
   }
 </script>
-<style scoped lang="scss">
+<style>
 
 </style>

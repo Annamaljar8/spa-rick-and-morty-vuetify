@@ -11,7 +11,7 @@
           label="Name"
           solo
           class="select"
-           @change="handleChange"
+          @change="handleChange"
         >
         <template v-slot:item="{ item }" >
           <v-list-item-content>
@@ -80,8 +80,10 @@ export default({
 <style>
   #searchWrapper{
     display: flex;
+    flex-wrap: wrap;
     justify-content: flex-start;
     margin: 1rem;
+    padding-left: 7rem;
   }
   #searchWrapper .search{
     position: relative;
@@ -107,6 +109,7 @@ export default({
       width: 150px;
       margin: 0;
       padding: 0;
+      color: #a9b1bd;
   }
   #rickAndMorty #searchWrapper .search .v-text-field.v-input--is-focused > .v-input__control > .v-input__slot::after {
       display: none;
@@ -121,7 +124,7 @@ export default({
       box-shadow: none;
   }
   #rickAndMorty #searchWrapper .search .v-text-field > .v-input__control > .v-input__slot input{
-      color: #A9B1BD;
+      color: #A9B1BD!important;
   }
   #rickAndMorty #searchWrapper .search .search-input{
       width: 200px;
@@ -154,6 +157,9 @@ export default({
   #app .v-list .v-list-item .v-list-item__title{
       font-size: 16px;
       color: #a9b1bd;
-      font-weight: 300;
+      font-weight: 500;
   }
+  #app .theme--light.v-label {
+  color: #a9b1bd;
+}
 </style>

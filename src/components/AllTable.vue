@@ -3,10 +3,10 @@
     <v-data-table
     :headers="headers"
     :items-per-page="sizeTable"
-    class="characters-table"
     :items="charactersResults"
     hide-default-footer
     disable-sort
+    color="#a9b1bd"
   >
       <template v-slot:body="{items}">
         <tbody>
@@ -24,9 +24,11 @@
               <div>{{ item.name }}</div>
             </td>
             <td>
-              <div>
+              <div class="icons-color">
                 <v-icon v-if="item.gender === 'Female'"> {{ mdiGenderFemale }}</v-icon>
                 <v-icon v-if="item.gender === 'Male'">{{ mdiGenderMale }}</v-icon>
+                <v-icon v-if="item.gender === 'Genderless'">{{ mdiClose }}</v-icon>
+                <v-icon v-if="item.gender === 'unknown'">{{ mdiMinus }}</v-icon>
                 {{ item.gender }}
               </div>
             </td>
@@ -37,8 +39,8 @@
               <div>{{ item.episodeCode }} </div>
             </td>
             <td>
-              <v-btn @click="addToFavorite(item)" class="btn-click" height=43 min-width=43><v-icon color="#11B0C8">{{ mdiStar }}</v-icon></v-btn>
-              <v-btn @click="deleteFromFavorite(item)" class="btn-unclick" height=43 min-width=43><v-icon color="white">{{ mdiStar }}</v-icon></v-btn>
+              <v-btn v-if="!checkItem(item)" @click="addToFavorite(item)" class="btn-click" height=43 min-width=43><v-icon color="#11B0C8">{{ mdiStar }}</v-icon></v-btn>
+              <v-btn v-if="checkItem(item)" @click="deleteFromFavorite(item)" class="btn-unclick" height=43 min-width=43><v-icon color="white">{{ mdiStar }}</v-icon></v-btn>
             </td>
           </tr>
         </tbody>
@@ -49,6 +51,7 @@
         color="#11B0C8"
         v-model="currentPage"
         :length="pagesLength"
+        :total-visible="7"
       ></v-pagination>
     </div>
   </div>
@@ -57,7 +60,7 @@
 <script>
 import { mapActions, mapMutations, mapGetters } from 'vuex';
 import * as types from '@/store/types'; 
-import { mdiGenderFemale,  mdiGenderMale, mdiStar} from '@mdi/js'; 
+import { mdiGenderFemale,  mdiGenderMale, mdiClose, mdiMinus, mdiStar} from '@mdi/js'; 
 
 export default {
   
@@ -106,7 +109,9 @@ export default {
     },
     mdiGenderMale: mdiGenderMale,
     mdiGenderFemale: mdiGenderFemale,
-    mdiStar: mdiStar,
+    mdiClose: mdiClose,
+    mdiMinus: mdiMinus,
+    mdiStar: mdiStar
   }),
   computed: {
     ...mapGetters ({
@@ -143,12 +148,21 @@ export default {
     deleteFromFavorite(item){
       this.deleteFavorite(item);
     },
+    checkItem(item){
+      for(let i = 0; i < this.arrFavorites.length; i++){
+        let arr =  this.arrFavorites[i];
+        if(arr.id == item.id){
+          return true;
+        } 
+      }
+      return false;
+    }
   },
 }
 </script>
 
 <style>
-.card{
+/* .card{
   width: 90vw;
   height: 3rem;
   display: flex;
@@ -157,7 +171,7 @@ export default {
   align-content: stretch;
   justify-content: flex-start;
   align-items: center;
-}
+} */
 .card-img img{
   width: 2.688rem!important;
   height: 4.25rem!important;
@@ -166,6 +180,11 @@ export default {
 .theme--light.v-data-table > .v-data-table__wrapper > table > thead > tr > th{
   height: 54px!important;
   background-color: rgba(229,234,244,.25)!important;
+  color: #a9b1bd!important;
+  font-weight: 400;
+  font-size: 16px;
+}
+.theme--light.v-data-table > .v-data-table__wrapper > table > tbody > tr > td{
   color: #a9b1bd;
   font-weight: 400;
   font-size: 16px;
@@ -181,5 +200,14 @@ export default {
   border-radius: 8px;
   background-color: #11B0C8!important;
   padding: 0!important;
+}
+.theme--light .icons-color .v-icon{
+  color: #a9b1bd;
+}
+#rickAndMorty .theme--light.v-pagination .v-pagination__item{
+  color: #a9b1bd;
+}
+#rickAndMorty .theme--light.v-pagination .v-pagination__item--active{
+  color: white;
 }
 </style>
